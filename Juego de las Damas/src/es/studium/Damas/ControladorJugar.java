@@ -27,39 +27,31 @@ public class ControladorJugar implements WindowListener, ActionListener
 		
 		
 		vj.addWindowListener(this);
-		
-		
-		
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
 		System.out.println(" click " + e.getSource());
-		
 	}
 
 	@Override
 	public void windowActivated(WindowEvent e)
 	{
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void windowClosed(WindowEvent e)
 	{
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void windowClosing(WindowEvent e)
 	{
-		
 		vj.setVisible(true);
 		//vj.dispose();
-		
 	}
 
 	@Override

@@ -14,10 +14,8 @@ public class ControladorMenuPrincipal implements WindowListener, ActionListener
 	{
 		this.vmp = vmp;
 		this.modelo = modelo;
-		
-		
+				
 		vmp.addWindowListener(this);
-			
 		vmp.btnJugar.addActionListener((ActionListener)this);
 		vmp.btnSalir.addActionListener((ActionListener)this);
 	}
@@ -40,8 +38,8 @@ public class ControladorMenuPrincipal implements WindowListener, ActionListener
 	public void windowActivated(WindowEvent arg0){}
 	public void windowClosed(WindowEvent arg0){}
 	public void windowClosing(WindowEvent arg0)
-	{
-		System.exit(0);		
+	{	
+		System.exit(0);
 	}
 	public void windowDeactivated(WindowEvent arg0){}
 	public void windowDeiconified(WindowEvent arg0){}

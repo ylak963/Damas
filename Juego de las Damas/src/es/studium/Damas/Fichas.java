@@ -36,7 +36,5 @@ public class Fichas
 	{
 		return "Fichas [color=" + color + ", esDama=" + esDama + "]";
 	}
-	
-	
 }
 	

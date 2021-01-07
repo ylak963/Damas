@@ -31,6 +31,7 @@ public class VistaMenuPrincipal extends Frame
 		setLocation(700,300);
 		setSize(500,445);
 
+		//Indicamos la posición del botón
 		btnJugar.setBounds(150, 80, 200, 50);
 		//btnJugar.addActionListener(this);
 		add(btnJugar);
@@ -59,8 +60,6 @@ public class VistaMenuPrincipal extends Frame
 		//Dibujar la imagen
 		g.drawImage(imagenDamasMenu, 4, 23, this);
 	}
-
-	
 	
 }
 

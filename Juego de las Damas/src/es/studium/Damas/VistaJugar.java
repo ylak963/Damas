@@ -42,7 +42,7 @@ public class VistaJugar extends Frame implements ActionListener
 		botonesPulsados[1]=null;
 
 	}
-
+	
 	public void inicializarTablero (JButton tablero[][], JPanel panel)
 	{
 
@@ -121,7 +121,9 @@ public class VistaJugar extends Frame implements ActionListener
 				}
 
 				tablero[i][j].addActionListener(this);
-				tablero[i][j].putClientProperty("coordernada", new Coordenada(i,j)); //Crear propiedad propia de coordenadas
+				//Clave valor, Clave= String coordenada y valor= Objeto Coordenada
+				//Crea un instancia de la clase Coordenada con la fila y columna de ese botón
+				tablero[i][j].putClientProperty("coordernada", new Coordenada(i,j)); //Crear propiedad propia de coordenadas llamada coordenada
 
 				panel.add(tablero[i][j]);		
 			}
@@ -184,11 +186,18 @@ public class VistaJugar extends Frame implements ActionListener
 	}
 	public void moverFicha (JButton botonPulsado1 , JButton botonPulsado2)//Recibir el color del boton pulsado
 	{
-		if(movimientosPosibles(botonPulsado1,botonPulsado2)==true)
+		//Cambiar tambien lo de true
+		if(movimientosPosibles(botonPulsado1,botonPulsado2)==1)
 		{
 			Icon pulsado1 = botonPulsado1.getIcon();
 			botonPulsado1.setIcon(null);
 			botonPulsado2.setIcon(pulsado1);
+			//Si come, cambiar movimiento
+		}
+		//Para comer fichas
+		else if(movimientosPosibles(botonPulsado1,botonPulsado2)==2)
+		{
+			
 		}
 
 	}
@@ -200,7 +209,8 @@ public class VistaJugar extends Frame implements ActionListener
 		Negras
 		Si tiene una ficha delante debe comerla
 	 */
-	public boolean movimientosPosibles(JButton bp1 , JButton bp2)
+	//Int 0 --> Movimiento no posible   int 1--> Movimiento posible int 2 --> Movimiento posible comiendo ficha
+	public int movimientosPosibles(JButton bp1 , JButton bp2)
 	{
 		//Conocer el color de la ficha pulsada y su posición
 		Icon fichaPulsada = bp1.getIcon();
@@ -211,18 +221,19 @@ public class VistaJugar extends Frame implements ActionListener
 		if(fichaPulsada==fichaBlanca)
 		{
 			//Si la fila del segundo boton es igual a la fila del primer boton +1. Se puede mover hacia delante
-			if(fichaPosicionSiguiente.getfila()==fichaPosicionActual.getfila()+1)
+			if(fichaPosicionSiguiente.getfila()==fichaPosicionActual.getfila()+1 || fichaPosicionSiguiente.getfila()==fichaPosicionActual.getfila()+2)
 			{
-				// Si la columna del segundo boton es igual a la columna del primer boton + 1 o la columan del segundo boton es igual a la columna del primer boton -1
-				if(fichaPosicionSiguiente.getcolumna()==fichaPosicionActual.getcolumna()+1 || fichaPosicionSiguiente.getcolumna()==fichaPosicionActual.getcolumna()-1)
+				// Si la columna del segundo boton es igual a la columna del primer boton + 1 o la columna del segundo boton es igual a la columna del primer boton -1
+				if(fichaPosicionSiguiente.getcolumna()==fichaPosicionActual.getcolumna()+1 ||
+						fichaPosicionSiguiente.getcolumna()==fichaPosicionActual.getcolumna()-1 || 
+						fichaPosicionSiguiente.getcolumna()==fichaPosicionActual.getcolumna()+2 ||
+						fichaPosicionSiguiente.getcolumna()==fichaPosicionActual.getcolumna()-2)
 				{
 					//Si en las siguientes casillas posibles no hay un icono
 					//Coordenada CoordIzq=new Coordenada(fichaPosicionActual.getfila()+1, fichaPosicionActual.getcolumna()-1);
 					//Coordenada CoordDerec= new Coordenada(fichaPosicionActual.getfila()+1,fichaPosicionActual.getcolumna()+1);
-					if(casillasPosiblesVaciasBlancas(bp1,bp2))
-					{
-						return true;
-					}
+					int posible =casillasPosiblesVaciasBlancas(bp1,bp2,fichaPulsada);
+					return posible;
 				}
 			}
 		}
@@ -230,17 +241,21 @@ public class VistaJugar extends Frame implements ActionListener
 		else if(fichaPulsada==fichaNegra)
 		{
 			//Si la fila del segundo boton es igual a la fila del primer boton -1
-			if(fichaPosicionSiguiente.getfila()==fichaPosicionActual.getfila()-1)
+			if(fichaPosicionSiguiente.getfila()==fichaPosicionActual.getfila()-1 || fichaPosicionSiguiente.getfila()==fichaPosicionActual.getfila()-2)
 			{
 				//Si la columna del segundo boton es igual a la columna del primer boton -1 o la columna del segundo boton es igual a la columna del primer boton +1
-				if(fichaPosicionSiguiente.getcolumna()==fichaPosicionActual.getcolumna()-1 || fichaPosicionSiguiente.getcolumna()==fichaPosicionActual.getcolumna()+1)
+				if(fichaPosicionSiguiente.getcolumna()==fichaPosicionActual.getcolumna()-1 ||
+						fichaPosicionSiguiente.getcolumna()==fichaPosicionActual.getcolumna()+1 ||
+						fichaPosicionSiguiente.getcolumna()==fichaPosicionActual.getcolumna()-2 ||
+						fichaPosicionSiguiente.getcolumna()==fichaPosicionActual.getcolumna()+2)
 				{
-					return true;
+					int posible = casillasPosiblesVaciasNegras(bp1,bp2,fichaPulsada);
+					return posible;
 				}
 			}
 		}
 
-		return false;
+		return 0;
 	}
 
 	public boolean mismoColor(JButton botonPul1, JButton botonPul2)
@@ -254,14 +269,17 @@ public class VistaJugar extends Frame implements ActionListener
 			return false;
 		}
 	}
-	public boolean casillasPosiblesVaciasBlancas (JButton bp1, JButton bp2) //FALTA QUE NO SE SALGA DE TABLERO********************
+	//Int 0 --> Movimiento no posible   int 1--> Movimiento posible int 2 --> Movimiento posible comiendo ficha
+	public int casillasPosiblesVaciasBlancas (JButton bp1, JButton bp2, Icon fichaPulsada) 
 	{
 		Coordenada fichaPosicionActual = (Coordenada) bp1.getClientProperty("coordernada");
 		Coordenada fichaPosicionSiguiente = (Coordenada) bp2.getClientProperty("coordernada");
 
 		JButton botonPosibleIzq=null;
 		JButton botonPosibleDerec=null;
-
+		JButton botonPosibleIzqBaja=null;
+		JButton botonPosibleDerecBaja=null;
+		
 		for(int fila=0; fila<tablero.length; fila++)
 		{
 			for(int columna=0; columna<tablero[fila].length; columna++)
@@ -272,46 +290,122 @@ public class VistaJugar extends Frame implements ActionListener
 				//Que se pueda mover la ficha dentro de los siguientes parametros del tablero. Que la columna sea mayor que 0 y menor que 7
 				if((fichaPosicionActual.getcolumna()+1)>=0 && (fichaPosicionActual.getcolumna()+1)<=7)
 				{
-					botonPosibleDerec = tablero[fichaPosicionActual.getfila()+1][fichaPosicionActual.getcolumna()+1];
+					JButton boton = tablero[fichaPosicionActual.getfila()+1][fichaPosicionActual.getcolumna()+1];
+					if(boton.getIcon()!=null)
+					{
+						botonPosibleDerecBaja=tablero[fichaPosicionActual.getfila()+2][fichaPosicionActual.getcolumna()+2];
+					}
+					else
+					{
+						botonPosibleDerec=boton;
+					}
 				}
 				if((fichaPosicionActual.getcolumna()-1)>=0 && (fichaPosicionActual.getcolumna()-1)<=7)
 				{
-					botonPosibleIzq = tablero[fichaPosicionActual.getfila()+1][fichaPosicionActual.getcolumna()-1];
+					JButton boton = tablero[fichaPosicionActual.getfila()+1][fichaPosicionActual.getcolumna()-1];
+					if(boton.getIcon()!=null)
+					{
+						botonPosibleIzqBaja=tablero[fichaPosicionActual.getfila()+2][fichaPosicionActual.getcolumna()-2];
+					}
+					else
+					{
+						botonPosibleIzq=boton;
+					}
 				}
 				//Falta comprobar filas						 
 			}
+		}	
+		//
+		int posible =0;
+		
+		//Si estoy en el borde que no pase nada si quiero ir a la izquierda porque esta fuera del tablero
+		if(botonPosibleIzq==null || fichaPosicionActual.getcolumna()==0)
+		{
+			posible=1;
 		}
 		//
-		boolean posible =false;
-		if(botonPosibleIzq!=null && botonPosibleIzq.getIcon()==null)
+		else if(botonPosibleDerec==null || fichaPosicionActual.getcolumna()==7)
 		{
-			posible=true;
+			posible=1;
 		}
-		System.out.println(botonPosibleIzq.getIcon());
-
-		if(botonPosibleDerec!=null && botonPosibleDerec.getIcon()==null)
+		else if(botonPosibleDerecBaja==null || fichaPosicionActual.getcolumna()==7)
 		{
-			posible=true;
-
+			posible=1;
 		}
-		System.out.println(botonPosibleDerec.getIcon());
+		else if(botonPosibleIzqBaja==null || fichaPosicionActual.getcolumna()==0)
+		{
+			posible=1;
+		}
+		//Si no estoy en los bordes
+		else if(botonPosibleIzq!=null && botonPosibleDerec!=null && botonPosibleIzqBaja!=null && botonPosibleDerecBaja!=null)
+		{
+			//Si tengo un icono a la izquierda 
+			if(botonPosibleIzq.getIcon()!=null)
+			{
+				// Y si ese icono es distinto al color de nuestra ficha
+				if(botonPosibleIzq.getIcon()!=fichaPulsada)
+				{
+					Coordenada coordenadaBotonPosibleDerec=(Coordenada) botonPosibleDerec.getClientProperty("coordernada");
+					//Entonces no me permita moverme a la derecha y he pulsado en el botón de la derecha
+					if(coordenadaBotonPosibleDerec==fichaPosicionSiguiente)
+					{
+						posible=0;
+					}
+					else
+					{
+						//Comiendo ficha
+						posible=2;
+					}
+				}
+				else
+				{
+					posible=1;
+				}
+				
+			}
+			//Si en la casilla existe un icono
+			else if(botonPosibleDerec.getIcon()!=null)
+			{
+				//Si en la casilla derecha existe un icono distinto al mio
+				if(botonPosibleDerec.getIcon()!=fichaPulsada)
+				{
+					//No me permite moverme a la izquierda si tengo un icono y he pulsado en el botón de la izquierda
+					Coordenada coordenadaBotonPosibleIzq = (Coordenada) botonPosibleIzq.getClientProperty("coordernada");
+					if(coordenadaBotonPosibleIzq==fichaPosicionSiguiente)
+					{
+						posible=0;
+					}
+					//Comiendo ficha
+					else
+					{
+						posible=2;
+					}
+				}
+				else
+				{
+					posible=1;
+				}
+			}
+			else
+			{
+				posible=1;
+			}
+			
+		}
+		
 		System.out.println(posible);
-		if(posible)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+		return posible;
 	}
-	public boolean casillasPosiblesVaciasNegras (JButton bp1, JButton bp2) //FALTA QUE NO SE SALGA DE TABLERO********************
+	//Int 0 --> Movimiento no posible   int 1--> Movimiento posible int 2 --> Movimiento posible comiendo ficha
+	public int casillasPosiblesVaciasNegras (JButton bp1, JButton bp2, Icon fichaPulsada) 
 	{
 		Coordenada fichaPosicionActual = (Coordenada) bp1.getClientProperty("coordernada");
 		Coordenada fichaPosicionSiguiente = (Coordenada) bp2.getClientProperty("coordernada");
 
 		JButton botonPosibleIzq=null;
 		JButton botonPosibleDerec=null;
+		JButton botonPosibleIzqSube=null;
+		JButton botonPosibleDerecBaja=null;
 
 		for(int fila=0; fila<tablero.length; fila++)
 		{
@@ -321,40 +415,112 @@ public class VistaJugar extends Frame implements ActionListener
 				//System.out.println("Ficha posicion Izquierda [ "+(fichaPosicionActual.getfila()+1) +"]["+ (fichaPosicionActual.getcolumna()-1)+"]");
 
 				//Que se pueda mover la ficha dentro de los siguientes parametros del tablero. Que la columna sea mayor que 0 y menor que 7
-				if((fichaPosicionActual.getcolumna()+1)>=0 && (fichaPosicionActual.getcolumna()+1)<=7)
+				if((fichaPosicionActual.getcolumna()+1)>=0 && (fichaPosicionActual.getcolumna()+1)<=7 )
 				{
-					botonPosibleDerec = tablero[fichaPosicionActual.getfila()+1][fichaPosicionActual.getcolumna()+1];
+					JButton boton = tablero[fichaPosicionActual.getfila()-1][fichaPosicionActual.getcolumna()+1];
+					if(boton.getIcon()!=null)
+					{
+						botonPosibleDerecBaja=tablero[fichaPosicionActual.getfila()-2][fichaPosicionActual.getcolumna()+2];
+					}
+					else
+					{
+						botonPosibleDerec=boton;
+					}
 				}
 				if((fichaPosicionActual.getcolumna()-1)>=0 && (fichaPosicionActual.getcolumna()-1)<=7)
 				{
-					botonPosibleIzq = tablero[fichaPosicionActual.getfila()+1][fichaPosicionActual.getcolumna()-1];
+					JButton boton = tablero[fichaPosicionActual.getfila()-1][fichaPosicionActual.getcolumna()-1];
+					if(boton.getIcon()!=null)
+					{
+						botonPosibleIzqSube = tablero[fichaPosicionActual.getfila()-2][fichaPosicionActual.getcolumna()-2];
+					}
+					else
+					{
+						botonPosibleIzq=boton;
+					}
+				
 				}
+				
 				//Falta comprobar filas						 
 			}
 		}
 		//
-		boolean posible =false;
-		if(botonPosibleIzq!=null && botonPosibleIzq.getIcon()==null)
+		int posible =0;
+				
+		//Si estoy en el borde o cerca que no pase nada si quiero ir a la izquierda porque esta fuera del tablero
+		if(botonPosibleIzq==null || fichaPosicionActual.getcolumna()==0)
 		{
-			posible=true;
+			posible=1;
 		}
-		System.out.println(botonPosibleIzq.getIcon());
-
-		if(botonPosibleDerec!=null && botonPosibleDerec.getIcon()==null)
+		else if(botonPosibleDerec==null || fichaPosicionActual.getcolumna()==7)
 		{
-			posible=true;
-
+			posible=1;
 		}
-		System.out.println(botonPosibleDerec.getIcon());
+		else if(botonPosibleDerecBaja==null || fichaPosicionActual.getcolumna()==7)
+		{
+			posible=1;
+		}
+		else if(botonPosibleIzqSube==null || fichaPosicionActual.getcolumna()==0)
+		{
+			posible=1;
+		}
+		//Si, no estoy en los bordes
+		else if (botonPosibleIzq!=null && botonPosibleDerec!=null && botonPosibleDerecBaja!=null && botonPosibleIzqSube!=null)
+		{ 
+		
+			//Si tengo un icono a la derecha
+			if(botonPosibleDerec.getIcon()!=null)
+			{
+				// Y si ese icono es distinto al color de nuestra ficha
+				if(botonPosibleDerec.getIcon()!=fichaPulsada)
+				{
+					Coordenada coordenadaBotonPosibleIzq=(Coordenada) botonPosibleIzq.getClientProperty("coordenada");
+					if(coordenadaBotonPosibleIzq==fichaPosicionSiguiente)
+					{
+						posible=0;
+					}
+					else
+					{
+						//Comiendo ficha
+						posible=2;
+					}
+				}
+				//
+				else
+				{
+					posible=1;
+				}
+			}
+			//Si en la casilla existe un icono
+			else if(botonPosibleIzq.getIcon()!=null)
+			{
+				//Si en la casilla izquierda existe un icono distinto al mio
+				if(botonPosibleIzq.getIcon()!=fichaPulsada)
+				{
+					//No me permite moverme a la derecha si tengo un icono y he pulsado en el botón de la derecha
+					Coordenada coordenadaBotonPosibleDerec = (Coordenada) botonPosibleDerec.getClientProperty("coordernada");
+					if(coordenadaBotonPosibleDerec==fichaPosicionSiguiente)
+					{
+						posible=0;
+					}
+					//Comer ficha
+					else
+					{
+						posible=2;
+					}
+				}
+				else
+				{
+					posible=1;
+				}
+			}
+			else
+			{
+				posible = 1;
+			}
+		}
+		
 		System.out.println(posible);
-		if(posible)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-
+		return posible;
 	}
 }

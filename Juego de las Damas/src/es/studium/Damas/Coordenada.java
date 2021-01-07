@@ -10,7 +10,6 @@ public class Coordenada
 		super();
 		this.fila=fila;
 		this.columna=columna;
-		
 	}
 
 	public int getfila()
@@ -38,6 +37,4 @@ public class Coordenada
 	{
 		return "Coordenada [fila=" + fila + ", columna=" + columna + "]";
 	}
-	
-	
 }
