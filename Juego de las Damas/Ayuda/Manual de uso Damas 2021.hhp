@@ -1,0 +1,18 @@
+[OPTIONS]
+Compatibility=1.1 or later
+Compiled file=Manual de uso Damas 2021.chm
+Contents file=Manual de uso Damas 2021\Table of Contents.hhc
+Default topic=Manual de uso Damas 2021\Indice.html
+Display compile progress=No
+Language=0xc0a Español (España, internacional)
+Title=Indice
+
+
+[FILES]
+Manual de uso Damas 2021\GuiaDeUso1.html
+Manual de uso Damas 2021\GuiaDeUsoIntroduccion.html
+Manual de uso Damas 2021\GuiaDeUsoMenu.html
+Manual de uso Damas 2021\Indice.html
+
+[INFOTYPES]
+

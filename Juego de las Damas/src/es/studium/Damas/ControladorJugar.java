@@ -6,80 +6,59 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
 public class ControladorJugar implements WindowListener, ActionListener
-{
-	VistaJugar vj /*= null*/ ;
-	Modelo modelo /*= null*/;
-	
+{	
+	VistaJugar vj = null;
+	Modelo modelo = null;
+		
 	public ControladorJugar(VistaJugar vj, Modelo modelo)
 	{
-		/*this.vj = vj;*/
-		/*this.modelo = modelo;*/
-		vj= new VistaJugar();
-		
-		/*for(int i=0; i<vj.tablero.length; i++)
-		{
-			for(int j=0; j<vj.tablero[i].length; i++)
-			{
-				vj.tablero[i][j].addActionListener((ActionListener)this);
-			}
-		}*/
-		modelo = new Modelo();
-		
-		
+		this.vj = vj;
+		this.modelo = modelo;
+				
 		vj.addWindowListener(this);
+		vj.btnFinalizar.addActionListener((ActionListener)this);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e)
-	{
-		System.out.println(" click " + e.getSource());
+	{				
+		if(e.getSource().equals(vj.btnFinalizar))
+		{
+			if(vj.fichasComidasJugador1>vj.fichasComidasJugador2)
+			{
+				vj.guardarDatos(vj.nombreJugador1, vj.movimientosJugador1);
+			}
+			else
+			{
+				vj.guardarDatos(vj.nombreJugador2, vj.movimientosJugador2);
+			}
+			vj.acabarPartida();
+		}
+		
+		//System.out.println(" click " + e.getSource());
 	}
-
 	@Override
-	public void windowActivated(WindowEvent e)
-	{
-		// TODO Auto-generated method stub
-	}
-
+	public void windowActivated(WindowEvent e){}
 	@Override
-	public void windowClosed(WindowEvent e)
-	{
-		// TODO Auto-generated method stub
-	}
-
+	public void windowClosed(WindowEvent e){}
 	@Override
 	public void windowClosing(WindowEvent e)
-	{
-		vj.setVisible(true);
-		//vj.dispose();
+	{		
+		if(vj.hasFocus())
+		{
+			vj.setVisible(false);
+		}
+		else
+		{
+			System.exit(0);
+		}		
 	}
-
 	@Override
-	public void windowDeactivated(WindowEvent e)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
+	public void windowDeactivated(WindowEvent e){}
 	@Override
-	public void windowDeiconified(WindowEvent e)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
+	public void windowDeiconified(WindowEvent e){}
 	@Override
-	public void windowIconified(WindowEvent e)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
+	public void windowIconified(WindowEvent e){}
 	@Override
-	public void windowOpened(WindowEvent e)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-	
+	public void windowOpened(WindowEvent e){}	
 }
